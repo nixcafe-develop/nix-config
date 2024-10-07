@@ -1,11 +1,3 @@
-# How to use Develop Nix Config
-
-### [use template repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
-
-### Configuration
-
-config path: `./lib/host/default.nix`
-```nix
 {
   # default vars
   host = {
@@ -24,8 +16,3 @@ config path: `./lib/host/default.nix`
     starship.settings = builtins.fromTOML (builtins.readFile ./config/starship.toml);
   };
 }
-```
-
-### Directory structure
-
-> TODO
