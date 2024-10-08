@@ -5,6 +5,7 @@
   # imports = [ ./hardware.nix ];
 
   cattery = {
+    user.name = "root"; # use root as default user
     room.desktop.wsl.enable = true;
 
     # Convenient to use vscode to connect wsl development on the host
