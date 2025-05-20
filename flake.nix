@@ -1,40 +1,53 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixos-hardware.url = "github:nixos/nixos-hardware";
+    # nixos-unstable (use flakehub to avoid github api limit)
+    # https://github.com/NixOS/nixpkgs/tree/nixos-unstable
+    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1.*.tar.gz";
+    # https://github.com/nixos/nixos-hardware
+    nixos-hardware.url = "https://flakehub.com/f/nixos/nixos-hardware/0.1.*.tar.gz";
 
     darwin = {
-      url = "github:nix-darwin/nix-darwin";
+      # https://github.com/nix-darwin/nix-darwin
+      url = "https://flakehub.com/f/nix-darwin/nix-darwin/0.1.*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager";
+      # https://github.com/nix-community/home-manager
+      url = "https://flakehub.com/f/nix-community/home-manager/0.1.*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     pre-commit-hooks = {
-      url = "github:cachix/git-hooks.nix";
+      # https://github.com/cachix/git-hooks.nix
+      url = "https://flakehub.com/f/cachix/git-hooks.nix/0.1.*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     nixos-generators = {
-      url = "github:nix-community/nixos-generators";
+      # https://github.com/nix-community/nixos-generators
+      url = "https://flakehub.com/f/nix-community/nixos-generators/0.1.*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     snowfall-lib = {
-      url = "github:snowfallorg/lib";
+      # https://github.com/snowfallorg/lib
+      url = "https://flakehub.com/f/snowfallorg/lib/*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     cattery-modules = {
-      url = "github:nixcafe/cattery-modules";
+      # https://github.com/nixcafe/cattery-modules
+      url = "https://flakehub.com/f/nixcafe/cattery-modules/0.1.*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.darwin.follows = "darwin";
+      inputs.home-manager.follows = "home-manager";
     };
 
     # Replace this with your host's secret, which can be generated using this template
     # https://github.com/nixcafe/develop-my-secrets
+    # or local secrets
+    # path: `./secrets` or `git+file:///path/to/secrets`
     my-secrets = {
       url = "github:nixcafe/develop-my-secrets";
       inputs.nixpkgs.follows = "nixpkgs";
