@@ -7,8 +7,8 @@
   cattery = {
     room.desktop.dev.enable = true;
 
-    # Enable kde desktop for this system
-    desktop.kde.enable = true;
+    # Enable kde plasma desktop for this system
+    desktop.plasma.enable = true;
   };
 
   # Compatibility Configuration

@@ -2,17 +2,20 @@
   # default vars
   host = {
     # Your name
-    name = "example";
+    name = "nixos";
     # Your real name (currently used as git name)
-    realName = "example";
+    realName = "NixOS";
     # Your email
     email = {
-      address = "demo@example.com";
+      address = "nixos@example.com";
       # smtp.host = "smtp.example.com";
       # imap.host = "imap.example.com";
     };
-    # If you want git to use gpg, you can fill in the key id here
-    signKey = "";
+    gpg = {
+      # If you want git to use gpg, you can fill in the key id here
+      signKey = "";
+      encryptKey = "";
+    };
     # Fill in the key that all your hosts trust.
     # Note that they have large permissions and need to be saved offline.
     authorizedKeys.keys = [ ];

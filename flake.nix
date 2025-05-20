@@ -54,7 +54,6 @@
       # 2. Only the key is stored
       flake = false;
     };
-
   };
 
   outputs =
