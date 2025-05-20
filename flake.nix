@@ -50,7 +50,9 @@
     # path: `./secrets` or `git+file:///path/to/secrets`
     my-secrets = {
       url = "github:nixcafe/develop-my-secrets";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # 1. No pollution to the environment
+      # 2. Only the key is stored
+      flake = false;
     };
 
   };
