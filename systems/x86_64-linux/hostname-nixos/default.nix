@@ -13,5 +13,5 @@
 
   # Compatibility Configuration
   # https://search.nixos.org/options?query=system.stateVersion&show=system.stateVersion
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.11";
 }

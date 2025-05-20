@@ -1,5 +1,5 @@
 {
-  home.stateVersion = "24.11";
+  home.stateVersion = "25.11";
 
   cattery = {
     room.general.enable = true;
