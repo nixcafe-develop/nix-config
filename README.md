@@ -1,8 +1,39 @@
 # Nix Flake · NixOS Configuration
 
-> purr · nixos · darwin · home-manager · cattery-modules · git-hooks · nix-flake · reproducible · nixos-generators
+> purr · git-hooks · nixos · darwin · home-manager · nix-flake
 
 Opinionated Nix flake template for NixOS, nix-darwin, and standalone home-manager configurations, powered by [`purr`](https://github.com/nixcafe/purr) and [`cattery-modules`](https://github.com/nixcafe/cattery-modules). Ships with pre-commit hooks (`nixfmt`, `deadnix`, `statix`) and an ISO/image build path via `nixos-generators`.
+
+Part of the [develop-templates](https://github.com/nixcafe/develop-templates) collection (`nix flake init`-ready).
+
+## Quick Start
+
+### `nix flake init`
+
+```bash
+nix flake init -t "github:nixcafe/develop-templates#nix-config" --refresh
+```
+
+Register an alias:
+```bash
+nix registry add beans "github:nixcafe/develop-templates"
+nix flake init -t beans#nix-config
+```
+
+> **Tip**: With [cattery-modules](https://github.com/nixcafe/cattery-modules), `beans` is pre-registered.
+
+### Create from Template
+
+```bash
+gh repo create my-nixos-config --template nixcafe/nix-config --clone
+```
+
+### Enter the Dev Shell
+
+```bash
+direnv allow       # or: nix develop
+nix flake show     # see all discovered systems/homes
+```
 
 ## What's Inside
 
@@ -18,15 +49,7 @@ Opinionated Nix flake template for NixOS, nix-darwin, and standalone home-manage
 | `git-hooks` | Pre-commit checks (nixfmt, deadnix, statix) |
 | Dev shell | `nix develop` drops you into a shell with the full toolchain + hooks |
 
-## Quick Start
-
-```bash
-# Clone (or template → new repo), then edit lib/host/default.nix
-nix flake show
-nix develop       # enter dev shell with nixfmt, deadnix, statix + hooks
-```
-
-## Customising
+## Customizing
 
 ### Add a System
 
@@ -74,6 +97,8 @@ When you enter the dev shell (`nix develop`), the hooks are installed into `.git
 ```
 .
 ├── flake.nix              # Flake entrypoint — inputs, purr mkFlake, outputsBuilder
+├── .envrc                 # direnv: `use flake`
+├── .gitignore
 ├── checks/
 │   └── git-hooks/
 │       └── default.nix    # Pre-commit hooks (nixfmt, deadnix, statix)
