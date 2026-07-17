@@ -1,89 +1,118 @@
-# NixOS Configuration Template
+# Nix Flake · NixOS Configuration
 
-This template provides a streamlined way to set up and manage your NixOS configuration using the `cattery-modules` from NixCafe. It includes support for agenix secret management and various system configurations.
+> purr · nixos · darwin · home-manager · cattery-modules · git-hooks · nix-flake · reproducible · nixos-generators
 
-## Features
+Opinionated Nix flake template for NixOS, nix-darwin, and standalone home-manager configurations, powered by [`purr`](https://github.com/nixcafe/purr) and [`cattery-modules`](https://github.com/nixcafe/cattery-modules). Ships with pre-commit hooks (`nixfmt`, `deadnix`, `statix`) and an ISO/image build path via `nixos-generators`.
 
-- Quick deployment of NixOS configurations using `cattery-modules`
-- Integrated agenix secret management
-- Support for multiple system types (NixOS, Darwin, WSL)
-- Pre-configured development environments
-- Modular and maintainable configuration structure
+## What's Inside
 
-## Getting Started
+| Component | Purpose |
+|-----------|---------|
+| `nixosConfigurations` | NixOS system builds (incl. WSL, install ISO) |
+| `darwinConfigurations` | macOS system builds via nix-darwin |
+| `homeConfigurations` | Standalone home-manager builds |
+| `nixos-generators` | Produce ISO / VM / cloud images from system configs |
+| `cattery-modules` | Pre-built NixOS, darwin & home modules |
+| Home auto-linking | `user@host` homes auto-injected into matching hosts by purr |
+| `nixfmt` · `deadnix` · `statix` | Nix code formatting, dead-code removal, linting |
+| `git-hooks` | Pre-commit checks (nixfmt, deadnix, statix) |
+| Dev shell | `nix develop` drops you into a shell with the full toolchain + hooks |
 
-### 1. Use Template Repository
+## Quick Start
 
-[Create a new repository from this template](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
-
-### 2. Basic Configuration
-
-The main configuration file is located at `./lib/host/default.nix`:
-
-```nix
-{
-  # default vars
-  host = {
-    # Your name
-    name = "example";
-    # Your nickname (currently used as git name)
-    nickname = "example";
-    # Your email
-    email = "demo@example.com";
-    # If you want git to use gpg, you can fill in the key id here
-    signKey = "";
-    # Fill in the key that all your hosts trust. 
-    # Note that they have large permissions and need to be saved offline.
-    authorizedKeys.keys = [ ];
-    # starship config, see: https://starship.rs/config/
-    starship.settings = builtins.fromTOML (builtins.readFile ./config/starship.toml);
-  };
-}
+```bash
+# Clone (or template → new repo), then edit lib/host/default.nix
+nix flake show
+nix develop       # enter dev shell with nixfmt, deadnix, statix + hooks
 ```
 
-### 3. Directory Structure
+## Customising
+
+### Add a System
+
+Create a new system under `systems/<arch>/<hostname>-<role>/default.nix`:
+
+```
+systems/
+└── x86_64-linux/
+    └── mybox-desktop/
+        └── default.nix   # nixosSystem config
+```
+
+The directory name becomes the configuration key (e.g. `mybox-desktop`). See existing examples in `systems/` for the expected structure. Supported architectures:
+
+- `aarch64-darwin` — Apple Silicon macOS
+- `x86_64-linux` — NixOS (bare metal, WSL, server)
+- `x86_64-install-iso` — ISO images via nixos-generators
+
+### Add a Home
+
+Create a standalone home under `homes/<arch>/<user>@<hostname>/default.nix`:
+
+```
+homes/
+└── x86_64-linux/
+    └── nixos@mybox-desktop/
+        └── default.nix   # home-manager config
+```
+
+**Purr auto-linking**: when a home directory matches the pattern `<user>@<hostname>`, purr automatically injects it into the matching `nixosConfiguration` or `darwinConfiguration`. No extra wiring needed.
+
+### Enable Pre-commit Hooks
+
+Hooks are defined in `checks/git-hooks/default.nix` and run `nixfmt`, `deadnix`, and `statix` on staged files:
+
+```bash
+nix flake check    # run hooks manually
+git commit         # hooks run automatically (via git-hooks.nix)
+```
+
+When you enter the dev shell (`nix develop`), the hooks are installed into `.git/hooks` automatically.
+
+## Project Structure
 
 ```
 .
-├── flake.nix              # Main flake configuration
-├── lib/                   # Library functions and host configurations
-│   └── host/             # Host-specific configurations
-├── modules/              # Custom modules
-│   ├── darwin/          # macOS specific modules
-│   ├── home/            # Home Manager modules
-│   └── nixos/           # NixOS specific modules
-├── systems/             # System configurations
-│   ├── aarch64-darwin/  # macOS configurations
-│   └── x86_64-linux/    # Linux configurations
-└── homes/               # Home Manager configurations
-    ├── aarch64-darwin/  # macOS home configurations
-    └── x86_64-linux/    # Linux home configurations
+├── flake.nix              # Flake entrypoint — inputs, purr mkFlake, outputsBuilder
+├── checks/
+│   └── git-hooks/
+│       └── default.nix    # Pre-commit hooks (nixfmt, deadnix, statix)
+├── shells/
+│   └── default/
+│       └── default.nix    # Dev shell (nixfmt, deadnix, statix + hooks)
+├── systems/               # System configurations per arch / host
+│   ├── aarch64-darwin/    #   macOS (nix-darwin)
+│   ├── x86_64-linux/      #   NixOS (bare metal, WSL, server)
+│   └── x86_64-install-iso/#   ISO images (nixos-generators)
+├── homes/                 # Standalone home-manager configs (user@host)
+│   ├── aarch64-darwin/
+│   ├── x86_64-linux/
+│   └── x86_64-install-iso/
+├── modules/               # Custom NixOS / darwin / home-manager modules
+│   ├── nixos/
+│   ├── darwin/
+│   └── home/
+├── lib/                   # Shared library code
+│   ├── host/              #   Per-user host metadata (name, email, keys, …)
+│   ├── module/            #   Module helpers
+│   └── secrets/           #   agenix integration (develop-my-secrets)
+└── statix.toml            # Statix linter config
 ```
 
-### 4. Using cattery-modules
+## Flake Inputs
 
-The template integrates `cattery-modules` for easy system configuration. Example usage:
+| Input | Source | Role |
+|-------|--------|------|
+| `nixpkgs` | FlakeHub / NixOS/nixpkgs | Package set |
+| `purr` | FlakeHub / nixcafe/purr | Flake builder (`mkFlake`) |
+| `cattery-modules` | FlakeHub / nixcafe/cattery-modules | Pre-built system modules |
+| `nixos-hardware` | FlakeHub / NixOS/nixos-hardware | Hardware quirks |
+| `darwin` | FlakeHub / nix-darwin/nix-darwin | macOS system management |
+| `home-manager` | FlakeHub / nix-community/home-manager | User environment |
+| `nixos-generators` | FlakeHub / nix-community/nixos-generators | Build ISO / VM images |
+| `git-hooks` | FlakeHub / cachix/git-hooks.nix | Pre-commit checks |
+| `my-secrets` | github:nixcafe/develop-my-secrets | agenix secret bootstrap |
 
-```nix
-{
-  cattery = {
-    room.desktop.dev.enable = true;  # Enable development environment
-    desktop.plasma.enable = true;    # Enable KDE Plasma
-  };
-}
-```
+## License
 
-### 5. Secret Management with agenix
-
-For detailed information about secret management using agenix, please refer to the [develop-my-secrets](https://github.com/nixcafe/develop-my-secrets) repository. The template is pre-configured to work with agenix for secure secret management.
-
-## Available Modules
-
-- **Desktop Environments**: KDE Plasma, GNOME, etc.
-- **Development Tools**: VSCode, development environments
-- **System Configurations**: Server, WSL, macOS
-- **Secret Management**: agenix integration
-
-## Contributing
-
-Feel free to submit issues and enhancement requests!
+MIT
