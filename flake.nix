@@ -20,11 +20,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-generators = {
-      url = "https://flakehub.com/f/nix-community/nixos-generators/0.1.*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     cattery-modules = {
       url = "https://flakehub.com/f/nixcafe/cattery-modules/0.1.*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -43,6 +38,7 @@
     inputs.purr.lib.mkFlake {
       inherit inputs;
       src = ./.;
+      namespace = "nix-config";
 
       nixpkgsConfig = {
         allowUnfree = true;
