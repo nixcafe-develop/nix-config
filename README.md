@@ -25,7 +25,7 @@ nix flake init -t beans#nix-config
 ### Create from Template
 
 ```bash
-gh repo create my-nixos-config --template nixcafe/nix-config --clone
+gh repo create my-nixos-config --template nixcafe-develop/nix-config --clone
 ```
 
 ### Enter the Dev Shell
@@ -140,7 +140,7 @@ When you enter the dev shell (`nix develop`), the hooks are installed into `.git
 ├── lib/                   # Shared library code
 │   ├── host/              #   Per-user host metadata (name, email, keys, …)
 │   ├── module/            #   Module helpers
-│   └── secrets/           #   agenix integration (develop-my-secrets)
+│   └── secrets/           #   agenix integration (nixcafe-develop/nix-secrets)
 └── statix.toml            # Statix linter config
 ```
 
@@ -155,7 +155,7 @@ When you enter the dev shell (`nix develop`), the hooks are installed into `.git
 | `darwin` | FlakeHub / nix-darwin/nix-darwin | macOS system management |
 | `home-manager` | FlakeHub / nix-community/home-manager | User environment |
 | `git-hooks` | FlakeHub / cachix/git-hooks.nix | Pre-commit checks |
-| `my-secrets` | github:nixcafe/develop-my-secrets | agenix secret bootstrap |
+| `my-secrets` | github:nixcafe-develop/nix-secrets | agenix secret bootstrap |
 
 ## License
 
